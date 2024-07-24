@@ -1,0 +1,29 @@
+
+.title {
+    font-family: "ChaletComprime-CologneSixty", sans-serif;
+}
+
+.subtitle, .text {
+    font-family: "Chalet LondonNineteenSixty", sans-serif;
+}
+
+.title, .subtitle {
+    text-shadow: 2px 2px 2px black;
+}
+
+.tab {
+    background-color: #256528;
+}
+
+.option {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.option:focus {
+    background-color: white;
+}
+
+.tab, .option {
+    margin-bottom: 0.25rem;
+    height: 2rem;
+}
