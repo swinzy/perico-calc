@@ -2,6 +2,37 @@ const VALUE = 0
 const WEIGHT = 1
 const VWRATIO = 2
 
+const LOOT = new Map();
+
+
+class Player {
+    static get MAX_CAPACITY() { return 1; };
+
+    constructor() {
+        this._items = [];
+    }
+
+    get capacity() {
+        let weight = 0;
+        this._items.forEach(item => {
+            weight += item.weight;
+        });
+        return Player.MAX_CAPACITY - weight;
+    }
+
+    addItem(type, weight) {
+    }
+}
+
+function getPlayerCapacity(player) {
+    let weight = 0;
+    player.forEach(item => {
+        weight += item.weight;
+    });
+    return 1 - weight;
+}
+
+
 // Set value and weight for loot
 const LOOT = new Map();
 //LOOT.set("gold", { 330888, 0.6665 }); // 496456
@@ -18,7 +49,6 @@ for (const [key, val] of LOOT.entries()) {
     LOOT.set(key, { value, weight, vwratio });
 }
 
-let players = 3;
 let gold = 2;
 let cash = 3;
 let painting = 1;
@@ -51,7 +81,17 @@ console.log(loot);
 
 loot.sort((a, b) => b.value / b.weight - a.value / b.weight);
 
+
 console.log(loot);
+
+
+let numPlayers = 4;
+let gain = 0;
+
+let players = [];
+for (let i = 0; i < numPlayers; i++) {
+    players.push([]);
+}
 
 let p1 = [];
 let p2 = [];
@@ -81,3 +121,6 @@ loot.forEach(item => {
 
 console.log(p1, p2, p3);
 console.log(p1c, p2c, p3c);
+
+let p = new Player();
+console.log(p.capacity);
