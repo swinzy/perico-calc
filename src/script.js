@@ -1,9 +1,118 @@
 const VALUE = 0
 const WEIGHT = 1
 const VWRATIO = 2
+const SELECTED_C = "option-selected";
+const OPTION_CONTENT_C = "option-content"
 
+window.onload = initializeComponent;
 
+window.optionWrapper;
+window.selectedOption = 0;
 
+function initializeComponent() {
+    window.optionWrapper = document.getElementById("option-wrapper");
+    
+    selectOption(window.selectedOption);
+
+    document.addEventListener("keydown", function(e) {
+        switch(e.key) {
+            case "ArrowDown":
+                selectOption(window.selectedOption + 1);
+                e.preventDefault();
+                break;
+            case "ArrowUp":
+                selectOption(window.selectedOption - 1);
+                e.preventDefault();
+                break;
+            case "ArrowLeft":
+                changeSelectedOptionContent(-1);
+                applySettings();
+                break;
+            case "ArrowRight":
+                changeSelectedOptionContent(1);
+                applySettings();
+                break;
+        }
+        console.log(Settings.players);
+    });
+}
+
+// Either I do not know how to write js or js just sucks :(
+function applySettings() {
+    const numPlayersSpan = document.getElementById("num-players");
+    const numGoldsSpan = document.getElementById("num-golds");
+    const numPaintingsSpan = document.getElementById("num-paintings");
+    const numCocaineSpan = document.getElementById("num-cocaine");
+    const numWeedSpan = document.getElementById("num-weed");
+    const numCashSpan = document.getElementById("num-cash");
+
+    const maxPlayers = 4;
+    const maxGolds = 6;
+    const maxPaintings = 5;
+    const maxCocaine = 12;
+    const maxWeed = 12;
+    const maxCash = 20;
+
+    const normPlayers = normalize(parseInt(numPlayersSpan.innerHTML), 1, maxPlayers);
+    Settings.players = normPlayers;
+    numPlayersSpan.innerHTML = normPlayers;
+}
+
+function normalize(value, min, max) {
+    if (isNaN(value)) return min;
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+function changeSelectedOptionContent(byAmount) {
+    let curr = parseInt(getSelectedOptionContent().innerHTML);
+    //if (isNaN(curr)) curr = 1;
+    getSelectedOptionContent().innerHTML = curr + byAmount;
+}
+
+function getSelectedOptionContent() {
+    let option = window.optionWrapper.children[window.selectedOption];
+    return option.getElementsByClassName(OPTION_CONTENT_C)[0];
+}
+
+function selectOption(index) {
+    let len = window.optionWrapper.children.length;
+    
+    // Remove selected for all options
+    for (let i = 0; i < len; i++) {
+        window.optionWrapper.children[i].classList.remove(SELECTED_C);
+    }
+
+    // Keeping the index within 0 - (len-1)
+    let modIndex = (len + index) % len;
+
+    // Select index option
+    window.optionWrapper.children[modIndex].classList.add(SELECTED_C);
+    window.selectedOption = modIndex;
+}
+
+class Settings {
+    static _players = 1;
+    static _golds = 0;
+    static _paintings = 0;
+    static _cocaine = 0;
+    static _weed = 0;
+    static _cash = 0;
+
+    static get players() { return Settings._players; };
+    static get golds() { return Settings._golds; };
+    static get paintings() { return Settings._paintings; };
+    static get cocaine() { return Settings._cocaine; };
+    static get weed() { return Settings._weed; };
+    static get cash() { return Settings._cash; };
+
+    static set players(value) {
+        if (value < 1) value = 1;
+        if (value > 4) value = 4;
+        Settings._players = value;
+    };
+}
 
 class Player {
     static get MAX_CAPACITY() { return 1; };
@@ -20,7 +129,10 @@ class Player {
         return Player.MAX_CAPACITY - weight;
     }
 
-    addItem(type, weight) {
+    addItem(item) {
+        if (item.weight > this.capacity) return false;
+        this._items.push({name: item.name, weight: item.weight});
+        return true;
     }
 }
 
@@ -93,27 +205,35 @@ for (let i = 0; i < numPlayers; i++) {
     players.push(new Player());
 }
 
-console.log(players);
-printPlayers(players);
+let p = 0;
+players.forEach(player => {
+    console.log("Player " + (p += 1).toString());
+    for (let i = 0; i < loot.length && player.capacity > 0; i++) {
+        let item = loot[i];
+        console.log("item", item);
+        // Case 0: loot has depleted
+        if (item.weight == 0) continue;
 
-players.forEach(p => {
-    let item = loot[0];
-    
-});
-
-loot.forEach(item => {
-    if (item.weight > 0) {
-        if (p1c < 1) {
-            let weightTaking = Math.min(item.weight, 1 - p1c);
-            item.weight -= weightTaking;
-            p1c += weightTaking;
-            p1.push({
-                name: item.name,
-                value: 0,
-                weight: weightTaking
-            });
+        // Case 1: does not fit
+        if (item.name == "painting" && item.weight > player.capacity) {
+            // Ignore item, move onto the next item
+            continue;
         }
+
+        // Case 2: partially fit
+        if (item.weight > player.capacity) {
+            let diff = item.weight - player.capacity;
+            item.weight -= diff;
+            let takenItem = { name: item.name, weight: player.capacity };
+            player.addItem(takenItem);
+            break; // Player full, no need to continue
+        }
+        
+        // Case 3: partially fit
+        player.addItem(item);
+        item.weight = 0;
     }
 });
+
 
 
