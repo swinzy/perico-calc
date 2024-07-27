@@ -2,7 +2,7 @@
     text-shadow: 2px 2px 2px black;
 }
 
-.title {
+.title-text {
     font-family: "ChaletComprime-CologneSixty", sans-serif;
 }
 
@@ -10,7 +10,7 @@
     font-family: "Chalet LondonNineteenSixty", sans-serif;
 }
 
-.tab, .option {
+.tab, .option, .player-tab {
     margin-bottom: 0.25rem;
     height: 2rem;
     display: flex;
@@ -18,7 +18,12 @@
 }
 
 .tab {
-    background-color: #256528;
+    background-color: #256628;
+    justify-content: center;
+}
+
+.player-tab {
+    background-color: #217625;
     justify-content: center;
 }
 
@@ -31,6 +36,11 @@
 .option:focus {
     color: black;
     background-color: white;
+}
+
+.option-card {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
 }
 
 .bold-icon {
@@ -48,3 +58,8 @@
     margin: 0 0.25rem;
 }
 
+.progress {
+    border-style: none !important;
+    border-radius: 0 !important;
+    height: 0.7rem;
+}

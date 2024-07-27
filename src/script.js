@@ -2,7 +2,7 @@ const VALUE = 0
 const WEIGHT = 1
 const VWRATIO = 2
 
-const LOOT = new Map();
+
 
 
 class Player {
@@ -24,12 +24,12 @@ class Player {
     }
 }
 
-function getPlayerCapacity(player) {
-    let weight = 0;
-    player.forEach(item => {
-        weight += item.weight;
+function printPlayers(players) {
+    let log = "";
+    players.forEach(p => {
+        log += p.capacity.toString() + " ";
     });
-    return 1 - weight;
+    console.log(log);
 }
 
 
@@ -90,19 +90,16 @@ let gain = 0;
 
 let players = [];
 for (let i = 0; i < numPlayers; i++) {
-    players.push([]);
+    players.push(new Player());
 }
 
-let p1 = [];
-let p2 = [];
-let p3 = [];
+console.log(players);
+printPlayers(players);
 
-let p1c = 0;
-let p2c = 0;
-let p3c = 0;
-
-console.log(p1, p2, p3);
-console.log(p1c, p2c, p3c);
+players.forEach(p => {
+    let item = loot[0];
+    
+});
 
 loot.forEach(item => {
     if (item.weight > 0) {
@@ -119,8 +116,4 @@ loot.forEach(item => {
     }
 });
 
-console.log(p1, p2, p3);
-console.log(p1c, p2c, p3c);
 
-let p = new Player();
-console.log(p.capacity);
