@@ -4,6 +4,15 @@ const VWRATIO = 2
 const SELECTED_C = "option-selected";
 const OPTION_CONTENT_C = "option-content"
 
+const MIN_PLAYERS = 1;
+const MAX_PLAYERS = 4;
+const MIN_LOOT = 0;
+const MAX_GOLDS = 6;
+const MAX_PAINTINGS = 5;
+const MAX_COCAINE = 12;
+const MAX_WEED = 12;
+const MAX_CASH = 20;
+
 window.onload = initializeComponent;
 
 window.optionWrapper;
@@ -33,7 +42,7 @@ function initializeComponent() {
                 applySettings();
                 break;
         }
-        console.log(Settings.players);
+        console.log(Settings);
     });
 }
 
@@ -46,16 +55,29 @@ function applySettings() {
     const numWeedSpan = document.getElementById("num-weed");
     const numCashSpan = document.getElementById("num-cash");
 
-    const maxPlayers = 4;
-    const maxGolds = 6;
-    const maxPaintings = 5;
-    const maxCocaine = 12;
-    const maxWeed = 12;
-    const maxCash = 20;
-
-    const normPlayers = normalize(parseInt(numPlayersSpan.innerHTML), 1, maxPlayers);
+    const normPlayers = normalize(parseInt(numPlayersSpan.innerHTML), MIN_PLAYERS, MAX_PLAYERS);
     Settings.players = normPlayers;
     numPlayersSpan.innerHTML = normPlayers;
+
+    const normGolds = normalize(parseInt(numGoldsSpan.innerHTML), MIN_LOOT, MAX_GOLDS);
+    Settings.golds = normGolds;
+    numGoldsSpan.innerHTML = normGolds;
+
+    const normPaintings = normalize(parseInt(numPaintingsSpan.innerHTML), MIN_LOOT, MAX_PAINTINGS);
+    Settings.paintings = normPaintings;
+    numPaintingsSpan.innerHTML = normPaintings;
+
+    const normCocaine = normalize(parseInt(numCocaineSpan.innerHTML), MIN_LOOT, MAX_COCAINE);
+    Settings.cocaine = normCocaine;
+    numCocaineSpan.innerHTML = normCocaine;
+
+    const normWeed = normalize(parseInt(numWeedSpan.innerHTML), MIN_LOOT, MAX_WEED);
+    Settings.weed = normWeed;
+    numWeedSpan.innerHTML = normWeed;
+
+    const normCash = normalize(parseInt(numCashSpan.innerHTML), MIN_LOOT, MAX_CASH);
+    Settings.cash = normCash;
+    numCashSpan.innerHTML = normCash;
 }
 
 function normalize(value, min, max) {
@@ -108,10 +130,28 @@ class Settings {
     static get cash() { return Settings._cash; };
 
     static set players(value) {
-        if (value < 1) value = 1;
-        if (value > 4) value = 4;
-        Settings._players = value;
+        Settings._players = normalize(value, MIN_PLAYERS, MAX_PLAYERS);
     };
+
+    static set golds(value) {
+        Settings._golds = normalize(value, MIN_LOOT, MAX_GOLDS);
+    }
+
+    static set paintings(value) {
+        Settings._paintings = normalize(value, MIN_LOOT, MAX_PAINTINGS);
+    }
+
+    static set cocaine(value) {
+        Settings._cocaine = normalize(value, MIN_LOOT, MAX_COCAINE);
+    }
+
+    static set weed(value) {
+        Settings._weed = normalize(value, MIN_LOOT, MAX_WEED);
+    }
+
+    static set cash(value) {
+        Settings._cash = normalize(value, MIN_LOOT, MAX_CASH);
+    }
 }
 
 class Player {
