@@ -66,11 +66,13 @@ function initializeComponent() {
 }
 
 function updatePlayers(players) {
+    let approxLoot = 0;
     for (let i = 0; i < MAX_PLAYERS; i++) {
         const playerCard = window.players[i];
         const bagContent = playerCard.getElementsByClassName("text")[0];
         const progressBar = playerCard.getElementsByClassName("progress-stacked")[0];
-
+        
+        progressBar.replaceChildren();
         bagContent.innerHTML = "Bag content:";
 
         // Shown player cards
@@ -86,7 +88,26 @@ function updatePlayers(players) {
                 bagContent.innerHTML += `<br>${name} x${parseFloat(portion.toFixed(RND_PREC))}`;
 
                 // Progress bar
-                //const segment = 
+                const segment = document.createElement("div");
+                const segmentBar = document.createElement("div");
+
+                segment.classList.add("progress");
+                segment.setAttribute("role", "progressbar");
+                segment.setAttribute("aria-label", `${item.name}-segment`);
+                segment.setAttribute("aria-valuemin", "0");
+                segment.setAttribute("aria-valuemax", "100");
+                segment.setAttribute("aria-valuenow", item.weight * 100);
+                segment.setAttribute("style", `width: ${item.weight * 100}%`);
+                
+                segmentBar.classList.add("progress-bar");
+                segmentBar.classList.add(`bg-${item.name}`);
+                
+                segment.appendChild(segmentBar);
+                progressBar.appendChild(segment);
+
+                // Approximate loot
+                let value = VALUE[item.name] * portion;
+                approxLoot += value;
             });
         }
         // Hidden player cards
@@ -94,6 +115,8 @@ function updatePlayers(players) {
             playerCard.classList.add(HIDDEN_C); 
         }
     }
+    const approxLootSpan = document.getElementById("approx-loot");
+    approxLootSpan.innerHTML = `\$${Number(approxLoot.toFixed()).toLocaleString()}`;
 }
 
 function capital(str) {

@@ -109,3 +109,24 @@ body {
     border-radius: 0 !important;
     height: 0.7rem;
 }
+
+.bg-gold {
+    background-color: #FFD700;
+}
+
+.bg-painting {
+    background-color: #964B00;
+}
+
+.bg-cocaine {
+    background-color: #EAEAEA;
+}
+
+.bg-weed {
+    background-color: #337A2C;
+}
+
+.bg-cash {
+    background-color: #85BB65;
+}
+
