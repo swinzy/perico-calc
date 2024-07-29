@@ -11,6 +11,8 @@ const MAX_COCAINE = 12;
 const MAX_WEED = 12;
 const MAX_CASH = 20;
 
+const RND_PREC = 2;
+
 // As of July 2024 (untested)
 const VALUE = {
     "gold":     496456, // 330888
@@ -65,11 +67,37 @@ function initializeComponent() {
 
 function updatePlayers(players) {
     for (let i = 0; i < MAX_PLAYERS; i++) {
-        if (i < players.length)
-            window.players[i].classList.remove(HIDDEN_C);
-        else
-            window.players[i].classList.add(HIDDEN_C);
+        const playerCard = window.players[i];
+        const bagContent = playerCard.getElementsByClassName("text")[0];
+        const progressBar = playerCard.getElementsByClassName("progress-stacked")[0];
+
+        bagContent.innerHTML = "Bag content:";
+
+        // Shown player cards
+        if (i < players.length) {
+            const player = players[i];
+            playerCard.classList.remove(HIDDEN_C);
+
+            // Append bag content & progress bar
+            player.items.forEach(item => {
+                // Bag content
+                const name = capital(item.name);
+                const portion = item.weight / STACK_WEIGHT[item.name];
+                bagContent.innerHTML += `<br>${name} x${parseFloat(portion.toFixed(RND_PREC))}`;
+
+                // Progress bar
+                //const segment = 
+            });
+        }
+        // Hidden player cards
+        else {
+            playerCard.classList.add(HIDDEN_C); 
+        }
     }
+}
+
+function capital(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 // Either I do not know how to write js or js just sucks :(
@@ -200,6 +228,10 @@ class Player {
         this._items.push({name: item.name, weight: item.weight});
         return true;
     }
+
+    get items() {
+        return this._items;
+    }
 }
 
 function compute() {
@@ -254,18 +286,25 @@ function compute() {
         for (let i = 0; i < loot.length && player.capacity > 0; i++) {
             let item = loot[i];
 
+            console.log(item.weight);
             // Case 0: loot has depleted
-            if (item.weight == 0) continue;
+            if (Number(item.weight.toFixed(RND_PREC)) == 0) continue;
+
+            // Case 0.1: player is full (almost)
+            if (Number(player.capacity.toFixed(RND_PREC)) == 0)
+                break;
 
             // Case 1: does not fit
-            if (item.name == "painting" && item.weight > player.capacity) {
+            if (item.name == "painting" && Number(item.weight.toFixed(RND_PREC)) > Number(player.capacity.toFixed(RND_PREC))) {
                 // Ignore item, move onto the next item
                 continue;
             }
 
             // Case 2: partially fit
-            if (item.weight > player.capacity) {
+            if (Number(item.weight.toFixed(RND_PREC)) > Number(player.capacity.toFixed(RND_PREC))) {
                 item.weight -= player.capacity;
+                if ((item.weight.toFixed(RND_PREC)) == 0)
+                    item.weight = 0
                 let takenItem = { name: item.name, weight: player.capacity };
                 player.addItem(takenItem);
                 break; // Player full, no need to continue
@@ -277,6 +316,7 @@ function compute() {
         }
     });
 
+    console.log(players);
     return players;
 }
 
